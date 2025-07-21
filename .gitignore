@@ -1,0 +1,7 @@
+.env
+# Ignore all __pycache__ folders
+__pycache__/
+data
+Gideon webscrap - Sheet1.csv
+scraper.log
+treadted_grand.json
