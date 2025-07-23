@@ -87,7 +87,7 @@ def load_json_to_db(json_file):
             print("len of job",len(df))
         else:
             df = pd.DataFrame(json_file)
-            print("len of job",len(df))
+            print("len of job direct access",len(df))
             
             # Drop rows where title is null or empty
         df = df[df['title'].notna() & (df['title'].astype(str).str.strip() != '')]
@@ -271,14 +271,14 @@ def update_salary_from_json(json_file, host, database, user, password):
 
 
 
-if __name__ == "__main__":
-     update_salary_from_json(
-        json_file=r"C:\Users\PC-022\Desktop\scrap\llm-job-scrap\update.json", 
-        host=HOST,
-        database=DATABASE,
-        user=USER,
-        password=PASSWORD
-    )
+# if __name__ == "__main__":
+#      update_salary_from_json(
+#         json_file=r"C:\Users\PC-022\Desktop\scrap\llm-job-scrap\update.json", 
+#         host=HOST,
+#         database=DATABASE,
+#         user=USER,
+#         password=PASSWORD
+#     )
     # delete_job_by_id(
     #     "e3527a46-d26d-4909-adf6-f9d7ba882422",
     #     host=HOST,
