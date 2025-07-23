@@ -45,10 +45,12 @@ def save_to_json(data, filename="grand_jobs_list.json"):
         json.dump(data, f, indent=2, ensure_ascii=False)
         return filename
 async def run():
-
+    print("start function ✈️✈️")
     logger.info("Starting web scraping job")
     open_provider =os.getenv("PROVIDER")
     openai_api_token = os.getenv("OPENAI_API_KEY")
+    print("open ai key", openai_api_token[:4])
+    print("open ai provider", open_provider[:4])
         
     urls = load_urls_from_csv(r"treat_static_job.csv",column_name='power_url',column_css="wait_for")
     logger.info(f"Found {len(urls)} sites")
@@ -142,11 +144,11 @@ if __name__ == "__main__":
    
     result = asyncio.run(run())    
     
+    failed_jobs = []
     if result:
         # save to database
         laod_data = load_json_to_db(result)
         print("print saved ✅✅✈️✅")
-        failed_jobs = []
     try:
         with open("failed_jobs.json", "r", encoding="utf-8") as f:
                 failed_jobs = json.load(f)
