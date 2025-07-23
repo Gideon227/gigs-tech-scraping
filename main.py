@@ -134,8 +134,9 @@ async def run():
         logger.info(f"Save {len(company_job_list)} for {company_name}") 
         print(f"Save {len(company_job_list)} for {company_name}")   
         # save_to_json(company_job_list, filename=f"{company_name}.json")
-    final_data_path = save_to_json(grand_jobs_list)   
-    return final_data_path 
+    final_data_path = save_to_json(grand_jobs_list) 
+    print("saved to file:", final_data_path)  
+    return grand_jobs_list 
         
 if __name__ == "__main__":
    
@@ -167,7 +168,6 @@ if __name__ == "__main__":
         ) 
     
     print(f"Final job list {len(result)}")
-    
-    print(f"Final job list {len(result)}")
+
     
     # transform data
