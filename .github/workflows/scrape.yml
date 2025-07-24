@@ -106,6 +106,8 @@ on:
 
 jobs:
   scrape:
+    container:
+      image: mcr.microsoft.com/playwright:v1.40.0-jammy
     runs-on: ubuntu-latest
     environment: scrap_env
     steps:
@@ -115,14 +117,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
-
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 \
-          libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 \
-          libxrandr2 libgbm1 libasound2 libpango-1.0-0 libcairo2
-
+          
       - name: Install Python dependencies
         run: |
           pip install -r requirements.txt
