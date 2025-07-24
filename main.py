@@ -52,7 +52,7 @@ async def run():
     print("open ai key", openai_api_token[:4])
     print("open ai provider", open_provider[:4])
         
-    urls = load_urls_from_csv(r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\treat_static_job.csv",column_name='power_url',column_css="wait_for")
+    urls = load_urls_from_csv(r"treat_static_job.csv",column_name='power_url',column_css="wait_for")
     logger.info(f"Found {len(urls)} sites")
     grand_jobs_list = []
      
