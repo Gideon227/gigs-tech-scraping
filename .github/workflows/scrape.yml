@@ -106,8 +106,8 @@ on:
 
 jobs:
   scrape:
-    container:
-      image: mcr.microsoft.com/playwright:v1.40.0-jammy
+    # container:
+    #   image: mcr.microsoft.com/playwright:v1.40.0-jammy
     runs-on: ubuntu-latest
     environment: scrap_env
     steps:
