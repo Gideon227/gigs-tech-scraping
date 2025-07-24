@@ -9,6 +9,7 @@ on:
 jobs:
   scrape:
     runs-on: ubuntu-latest
+    environment: scrap_env
     steps:
       - uses: actions/checkout@v3
 
@@ -23,7 +24,7 @@ jobs:
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           CAPTCHA_API_KEY: ${{ secrets.CAPTCHA_API_KEY }}
-          OPENAI_API_KEY: ${{ env.OPENAI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PROVIDER: ${{ secrets.PROVIDER }}
 
           HOST: ${{ secrets.HOST }}
