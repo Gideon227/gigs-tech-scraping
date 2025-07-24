@@ -52,7 +52,7 @@ async def run():
     print("open ai key", openai_api_token[:4])
     print("open ai provider", open_provider[:4])
         
-    urls = load_urls_from_csv(r"treat_static_job.csv",column_name='power_url',column_css="wait_for")
+    urls = load_urls_from_csv(r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\treat_static_job.csv",column_name='power_url',column_css="wait_for")
     logger.info(f"Found {len(urls)} sites")
     grand_jobs_list = []
      
@@ -62,11 +62,24 @@ async def run():
             company_name=url["company_name"]
             print(f"\n📄 Processing {i+1}/{len(urls)}: {company_name}")
             logger.info(f"Processing {i+1}/{len(urls)}: {company_name}")
-            jobs_per_site = await job_list_extractor(url=url, provider=open_provider, api_token=openai_api_token)
+            # Add debug logging before the extractor call
+            logger.debug(f"Attempting to extract jobs for {company_name} from URL: {url.get('power_url')}")
+            jobs_per_site=[]
+            try:
+                jobs_per_site = await job_list_extractor(url=url, provider=open_provider, api_token=openai_api_token)
+            except Exception as extractor_error:
+                print("error", extractor_error)   
+                logger.error(f"Extractor failed for {company_name}: {str(extractor_error)}") 
+                save_failed({
+                    "company": company_name,
+                    "url": url,
+                    "error": str(extractor_error),
+                    "type": "extractor_error"
+                })
+                continue 
             
-            logger.info(f"Found {len(jobs_per_site)} of jobd")
-            # append_jsonl(jobs_per_site, filename="sites_datas_store.jsonl")
-            # print(f"Found number {len(jobs_per_site)} of job") 
+            logger.info(f"Found {len(jobs_per_site)} of jobs")
+        
             
             
             if jobs_per_site:
