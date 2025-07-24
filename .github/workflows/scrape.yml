@@ -39,7 +39,7 @@ jobs:
           MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
         run: echo "Environment variables set"
-        run: echo "keys env: ${{ env.OPENAI_API_KEY }}, secret:${{ secrets.PROVIDER }}"
+        run: echo "keys env ${{ env.OPENAI_API_KEY }}, secret:${{ secrets.PROVIDER }}"
 
       - name: Install dependencies and run scraper
         run: |
