@@ -35,7 +35,7 @@ def load_json_to_db(json_file):
             password=PASSWORD
         )
         cursor = conn.cursor()
-        cursor.execute("DROP TABLE IF EXISTS job;")
+
         cursor.execute("CREATE EXTENSION IF NOT EXISTS pgcrypto;")
 #
         cursor.execute("""  
