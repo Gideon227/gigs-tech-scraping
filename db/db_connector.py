@@ -138,6 +138,7 @@ def load_json_to_db(json_file):
                 description, "roleCategory", responsibilities, skills,   
                 "applicationUrl", country, state, city, currency, "minSalary", "maxSalary", qualifications,"experienceLevel", benefits,  "workSettings", "postedDate",category
             ) VALUES %s
+            ON CONFLICT ("jobId") DO NOTHING
         """
         execute_values(cursor, insert_query, rows)
 
@@ -271,7 +272,80 @@ def update_salary_from_json(json_file, host, database, user, password):
 
 
 
+
+# import psycopg2
+
+def remove_duplicate_jobids(host, database, user, password):
+    """
+    Delete duplicate rows in the job table based on jobId, keeping only one (the one with the lowest id).
+    """
+    try:
+        conn = psycopg2.connect(
+            host=host,
+            database=database,
+            user=user,
+            password=password
+        )
+        cursor = conn.cursor()
+        # Delete duplicates, keep the row with the smallest UUID (or you can use MIN(createdAt) if you prefer)
+        delete_query = """
+        DELETE FROM job a
+        USING job b
+        WHERE
+            a."jobId" = b."jobId"
+            AND a.id > b.id;
+        """
+        cursor.execute(delete_query)
+        conn.commit()
+        print("Duplicate jobId rows removed, only one kept for each jobId.")
+    except Exception as e:
+        print("Error:", e)
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
+
+def add_unique_constraint_on_jobid(host, database, user, password):
+    """
+    Add a unique constraint to the jobId column in the job table.
+    """
+    try:
+        conn = psycopg2.connect(
+            host=host,
+            database=database,
+            user=user,
+            password=password
+        )
+        cursor = conn.cursor()
+        # Add unique constraint (if not already exists)
+        alter_query = """
+        DO $$
+        BEGIN
+            IF NOT EXISTS (
+                SELECT 1
+                FROM pg_constraint
+                WHERE conname = 'job_jobid_key'
+            ) THEN
+                ALTER TABLE job ADD CONSTRAINT job_jobid_key UNIQUE ("jobId");
+            END IF;
+        END
+        $$;
+        """
+        cursor.execute(alter_query)
+        conn.commit()
+        print("Unique constraint added to jobId column.")
+    except Exception as e:
+        print("Error:", e)
+        conn.rollback()
+    finally:
+        cursor.close()
+        conn.close()
+
+
 # if __name__ == "__main__":
+
+#     remove_duplicate_jobids(host=HOST, database=DATABASE, user=USER, password=PASSWORD)
+#     add_unique_constraint_on_jobid(host=HOST, database=DATABASE, user=USER, password=PASSWORD)
 #      update_salary_from_json(
 #         json_file=r"C:\Users\PC-022\Desktop\scrap\llm-job-scrap\update.json", 
 #         host=HOST,
