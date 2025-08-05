@@ -109,6 +109,7 @@ def load_json_to_db(json_file):
                 row.get('salary', ''),
                 row.get('description', ''), 
                 row.get("roleCategory",""),
+                row.get("jobType"), 
                 clean_array_string(row.get('responsibilities')),  # Convert to proper array
                 clean_array_string(row.get('skills')),           # Convert to proper array
                 row.get('applicationUrl', ''), 
@@ -135,7 +136,7 @@ def load_json_to_db(json_file):
             INSERT INTO job (
                 "companyName","companyLogo",
                 "jobId", title, location, salary, 
-                description, "roleCategory", responsibilities, skills,   
+                description, "roleCategory", "jobType", responsibilities, skills,   
                 "applicationUrl", country, state, city, currency, "minSalary", "maxSalary", qualifications,"experienceLevel", benefits,  "workSettings", "postedDate",category
             ) VALUES %s
             ON CONFLICT ("jobId") DO NOTHING
