@@ -1,12 +1,15 @@
 
 import psycopg2
 import pandas as pd
+import numpy as np
 import os
 import json
 import ast  # For safely evaluating strings containing Python literals
 from dotenv import load_dotenv
 from psycopg2.extras import execute_values
-from utils.logger import setup_scraping_logger
+# from utils import setup_scraping_logger
+import logging
+
 
 load_dotenv()
 # DATABASE = os.getenv("DATABASE")
@@ -15,22 +18,50 @@ load_dotenv()
 # PASSWORD = os.getenv("PASSWORD")
 # DATABASE_URL = os.getenv("DATABASE_URL")
 
+# user: 'shahen',
+#   host: 'gigs-tech-prod-rds.cbiiywio2rr0.us-east-2.rds.amazonaws.com',
+#   database: 'gigs-tech',
+#   password: 'Zebra8!Moon$',
+#   port: 5432,
+
 DATABASE = os.getenv("DB_NAME")
 USER = os.getenv("PG_USER")
 HOST = os.getenv("PG_HOST")
 PASSWORD = os.getenv("PG_PASSWORD")
 DATABASE_URL = os.getenv("DATABASE_URL")
 # Configure logging
-logger = setup_scraping_logger("db_connector")
+# logger = setup_scraping_logger("db_connector")
+logger = logging.getLogger("db_connector")
+logger.setLevel(logging.INFO)
 
-def clean_array_string(array_str):
-    """Convert string representation of array to actual list"""
-    try:
-        if isinstance(array_str, str):
-            return ast.literal_eval(array_str)
-        return array_str or []
-    except (ValueError, SyntaxError):
+
+def clean_array_string(value):
+    """Safer array cleaning that handles more edge cases"""
+    # Handle None and NaN for scalars
+    if value is None:
         return []
+   
+    # Handle numpy arrays and pandas Series
+    if isinstance(value, (float, int)) and pd.isna(value):
+        return []
+    if isinstance(value, (np.ndarray, pd.Series)):
+        # Remove NaN and None
+        return [str(item) for item in value if item is not None and not pd.isna(item)]
+    # Handle lists
+    if isinstance(value, list):
+        return [str(item) for item in value if item is not None and not pd.isna(item)]
+    # Handle strings
+    if isinstance(value, str):
+        try:
+            # Handle string representations of lists
+            if value.startswith('[') and value.endswith(']'):
+                parsed = json.loads(value.replace("'", '"'))
+                return [str(item) for item in parsed if item is not None]
+            # Handle comma-separated strings
+            return [item.strip() for item in value.split(",") if item.strip()]
+        except:
+            return [str(value)]
+    return [str(value)]
 
 def load_json_to_db_pt(json_file):
     """Loads job data from JSON into PostgreSQL database"""
@@ -178,16 +209,19 @@ def delete_job_by_id(job_id, host, database, user, password):
             password=password
         )
         cursor = conn.cursor()
-        cursor.execute("DELETE FROM job WHERE 'jobId' = %s;", (job_id,))
+        # Corrected: use double quotes for column name, not single quotes
+        cursor.execute('DELETE FROM job WHERE "jobId" = %s;', (job_id,))
         conn.commit()
-        print(f"Job with id {job_id} deleted.")
+        print(f"Job with jobId {job_id} deleted.")
     except Exception as e:
         print("Error:", e)
-        conn.rollback()
+        if conn:
+            conn.rollback()
     finally:
-        cursor.close()
-        conn.close()
-
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
 def find_salary_rows():
     try:
@@ -297,17 +331,11 @@ def fetch_jobs_from_db(host, database, user, password):
             password=password
         )
         cursor = conn.cursor()
-
-        # Execute SELECT query
-        # cursor.execute("SELECT city FROM job WHERE city='NaN'")
-        # cursor.execute("UPDATE job SET city = NULL WHERE city = 'NaN'")
-        # conn.commit()
-        # cursor.execute("SELECT COUNT(*) FROM job WHERE city IS NULL")
-        cursor.execute("SELECT * FROM job LIMIT 2")  # Fetch first 10 records for demonstration
         cursor.execute("SELECT COUNT(*) FROM job")
         count = cursor.fetchone()[0]
         print("Total records:", count)
-
+      
+       
     
         print("count",count)
         conn.commit()
@@ -389,31 +417,17 @@ def add_unique_constraint_on_jobid(host, database, user, password):
         conn.close()
 
 
-
-
-
-def clean_array_string(value):
-    """Helper function to clean array strings"""
-    if pd.isna(value) or value is None:
-        return []
-    if isinstance(value, str):
-        try:
-            return [item.strip() for item in value.strip("[]").split(",") if item.strip()]
-        except:
-            return []
-    return value if isinstance(value, list) else []
-
-def parse_posted_date(date_str):
-    """Parse various date formats into datetime"""
-    if pd.isna(date_str) or not date_str:
-        return datetime.now()
-    try:
-        return datetime.strptime(date_str, "%Y-%m-%d")
-    except ValueError:
-        try:
-            return datetime.strptime(date_str, "%m/%d/%Y")
-        except ValueError:
-            return datetime.now()
+# def parse_posted_date(date_str):
+#     """Parse various date formats into datetime"""
+#     if pd.isna(date_str) or not date_str:
+#         return datetime.now()
+#     try:
+#         return datetime.strptime(date_str, "%Y-%m-%d")
+#     except ValueError:
+#         try:
+#             return datetime.strptime(date_str, "%m/%d/%Y")
+#         except ValueError:
+#             return datetime.now()
 
 def load_json_to_db(json_file, db_params):
     """Loads job data from JSON into PostgreSQL database
@@ -562,6 +576,7 @@ def load_json_to_db(json_file, db_params):
         
         success_msg = f"Successfully inserted {len(rows)} records"
         logger.info(success_msg)
+        print(success_msg)
         return success_msg
         
     except psycopg2.Error as e:
@@ -583,17 +598,17 @@ def load_json_to_db(json_file, db_params):
 if __name__ == "__main__":
     # Example usage
     json_file = r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\grand_jobs_list.json"
-    # load_json_to_db(json_file)
-    print("Host", HOST)
+    
     db_params = {
-    'host': 'localhost',
-    'database': 'jobs_db',
-    'user': 'postgres',
-    'password': 'secret'
+    'host': HOST,
+    'database': DATABASE,
+    'user': USER,
+    'password': PASSWORD
 }
-    load_json_to_db(json_file)
+    # load_json_to_db(json_file, db_params)
+    # # load_json_to_db_pt(json_file)
+    delete_job_by_id("JOB-003", HOST, DATABASE, USER, PASSWORD)
     fetch_jobs_from_db(host=HOST, database=DATABASE, user=USER, password=PASSWORD)
-    # delete_job_by_id("JOB-003", HOST, DATABASE, USER, PASSWORD)
     # find_salary_rows()
     # find_special_salary_rows()
     # update_salary_from_json("path_to_your_json_file.json", HOST, DATABASE, USER, PASSWORD)

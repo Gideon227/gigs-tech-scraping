@@ -161,12 +161,13 @@ if __name__ == "__main__":
     USER = os.getenv("USER")
     HOST = os.getenv("HOST")
     PASSWORD = os.getenv("PASSWORD") 
+    
     db_params = {
     'host': HOST,
     'database': DATABASE,
     'user': USER,
     'password': PASSWORD
-}
+     }
     failed_jobs = []
     if result:
         # save to database
