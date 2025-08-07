@@ -55,7 +55,7 @@ async def run():
     print("open ai provider", open_provider[:4])
         
     urls = load_urls_from_csv(r"updated_treated_source.csv",column_name='power_url',column_css="wait_for")
-    urls = urls[1:2]  # Limit to first 1 URLs for testing
+    # urls = urls[1:2]  # Limit to first 1 URLs for testing
     logger.info(f"Found {len(urls)} sites")
     grand_jobs_list = []
      
