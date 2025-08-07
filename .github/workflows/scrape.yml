@@ -11,7 +11,8 @@ jobs:
     # container:
     #   image: mcr.microsoft.com/playwright:v1.40.0-jammy
     runs-on: ubuntu-latest
-    environment: scrap_env
+    # environment: scrap_env
+    environment: production
     steps:
       - uses: actions/checkout@v3
 
