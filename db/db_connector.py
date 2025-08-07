@@ -6,13 +6,22 @@ import json
 import ast  # For safely evaluating strings containing Python literals
 from dotenv import load_dotenv
 from psycopg2.extras import execute_values
+from utils.logger import setup_scraping_logger
 
 load_dotenv()
-DATABASE = os.getenv("DATABASE")
-USER = os.getenv("USER")
-HOST = os.getenv("HOST")
-PASSWORD = os.getenv("PASSWORD")
+# DATABASE = os.getenv("DATABASE")
+# USER = os.getenv("USER")
+# HOST = os.getenv("HOST")
+# PASSWORD = os.getenv("PASSWORD")
+# DATABASE_URL = os.getenv("DATABASE_URL")
+
+DATABASE = os.getenv("DB_NAME")
+USER = os.getenv("PG_USER")
+HOST = os.getenv("PG_HOST")
+PASSWORD = os.getenv("PG_PASSWORD")
 DATABASE_URL = os.getenv("DATABASE_URL")
+# Configure logging
+logger = setup_scraping_logger("db_connector")
 
 def clean_array_string(array_str):
     """Convert string representation of array to actual list"""
@@ -23,8 +32,13 @@ def clean_array_string(array_str):
     except (ValueError, SyntaxError):
         return []
 
-def load_json_to_db(json_file):
+def load_json_to_db_pt(json_file):
     """Loads job data from JSON into PostgreSQL database"""
+    conn=cursor=None
+    print("Password", PASSWORD)
+    print("Database", DATABASE)
+    print("User", USER)
+    # prin("db_name",)
     
     try:
         # Connect to PostgreSQL
@@ -118,7 +132,6 @@ def load_json_to_db(json_file):
                 row.get('city', ''),
                 row.get('currency', ''),
                 max_salary,
-               
                 min_salary,
                 clean_array_string(row.get('qualifications')),# Ensure integer type
                 row.get("experienceLevel",""),
@@ -131,7 +144,6 @@ def load_json_to_db(json_file):
             ))
 
 
-        # Batch insert
         insert_query = """
             INSERT INTO job (
                 "companyName","companyLogo",
@@ -148,12 +160,14 @@ def load_json_to_db(json_file):
         return f"Successfully inserted {len(rows)} records"
     except Exception as e:
         print(f"Error: {e}")
-        
-        conn.rollback()
+        if conn:
+            conn.rollback()
     finally:
         
-        cursor.close()
-        conn.close()
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
 def delete_job_by_id(job_id, host, database, user, password):
     try:
@@ -164,7 +178,7 @@ def delete_job_by_id(job_id, host, database, user, password):
             password=password
         )
         cursor = conn.cursor()
-        cursor.execute("DELETE FROM job WHERE id = %s;", (job_id,))
+        cursor.execute("DELETE FROM job WHERE 'jobId' = %s;", (job_id,))
         conn.commit()
         print(f"Job with id {job_id} deleted.")
     except Exception as e:
@@ -272,6 +286,38 @@ def update_salary_from_json(json_file, host, database, user, password):
     conn.close()
 
 
+def fetch_jobs_from_db(host, database, user, password):
+    """Fetches all job records from the PostgreSQL database and prints them."""
+    try:
+        # Connect to PostgreSQL
+        conn = psycopg2.connect(
+            host=host,
+            database=database,
+            user=user,
+            password=password
+        )
+        cursor = conn.cursor()
+
+        # Execute SELECT query
+        # cursor.execute("SELECT city FROM job WHERE city='NaN'")
+        # cursor.execute("UPDATE job SET city = NULL WHERE city = 'NaN'")
+        # conn.commit()
+        # cursor.execute("SELECT COUNT(*) FROM job WHERE city IS NULL")
+        cursor.execute("SELECT * FROM job LIMIT 2")  # Fetch first 10 records for demonstration
+        cursor.execute("SELECT COUNT(*) FROM job")
+        count = cursor.fetchone()[0]
+        print("Total records:", count)
+
+    
+        print("count",count)
+        conn.commit()
+        # Clean up
+        cursor.close()
+        conn.close()
+
+    except Exception as e:
+        print("Error fetching data from database:", e)
+
 
 
 # import psycopg2
@@ -343,49 +389,216 @@ def add_unique_constraint_on_jobid(host, database, user, password):
         conn.close()
 
 
-# if __name__ == "__main__":
 
-#     remove_duplicate_jobids(host=HOST, database=DATABASE, user=USER, password=PASSWORD)
-#     add_unique_constraint_on_jobid(host=HOST, database=DATABASE, user=USER, password=PASSWORD)
-#      update_salary_from_json(
-#         json_file=r"C:\Users\PC-022\Desktop\scrap\llm-job-scrap\update.json", 
-#         host=HOST,
-#         database=DATABASE,
-#         user=USER,
-#         password=PASSWORD
-#     )
-    # delete_job_by_id(
-    #     "e3527a46-d26d-4909-adf6-f9d7ba882422",
-    #     host=HOST,
-    #     database=DATABASE,
-    #     user=USER,
-    #     password=PASSWORD
-    # )
-    # find_special_salary_rows()
-    # find_salary_rows()
+
+
+def clean_array_string(value):
+    """Helper function to clean array strings"""
+    if pd.isna(value) or value is None:
+        return []
+    if isinstance(value, str):
+        try:
+            return [item.strip() for item in value.strip("[]").split(",") if item.strip()]
+        except:
+            return []
+    return value if isinstance(value, list) else []
+
+def parse_posted_date(date_str):
+    """Parse various date formats into datetime"""
+    if pd.isna(date_str) or not date_str:
+        return datetime.now()
+    try:
+        return datetime.strptime(date_str, "%Y-%m-%d")
+    except ValueError:
+        try:
+            return datetime.strptime(date_str, "%m/%d/%Y")
+        except ValueError:
+            return datetime.now()
+
+def load_json_to_db(json_file, db_params):
+    """Loads job data from JSON into PostgreSQL database
     
-    # load_json_to_db(
-    #     # json_file=r"C:\Users\David\OneDrive\Desktop\web scrap\microsoft\csvjson (2).json",  # Replace with your JSON file path
-    #     # json_file=r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\Accenture1.json",
-    #     # json_file=r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\Apex Systems.json",
-    #     # json_file=r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\Deloitte (Microsoft Practice).json",
-    #     # json_file=r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\DXC Technology.json",
-    #     # json_file=r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\Nigel Frank International.json",
-    #     # json_file=r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\Next Ventures.json",
-    #     # json_file=r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\Pearson Carter.json",
-    #     # json_file=r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\Prodapta (Ellis Group).json",
-    #     # json_file=r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\MCA Connect.json",
-    #     # json_file=r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\Digitall Nature Bulgaria EOOD.json",
-    #     # json_file=r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\Tietoevry.json",
-    #     # json_file=r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\Wipro.json",
-    #     json_file=r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\treadted_grand.json",
+    Args:
+        json_file: Path to JSON file or JSON data directly
+        db_params: Dictionary containing database connection parameters
+                  (host, database, user, password)
+    
+    Returns:
+        str: Status message about the operation
+    """
+    conn = cursor = None
+    
+    try:
+        # Connect to PostgreSQL
+        conn = psycopg2.connect(
+            host=db_params['host'],
+            database=db_params['database'],
+            user=db_params['user'],
+            password=db_params['password']
+        )
+        cursor = conn.cursor()
+
+        # Create extension and table if not exists
+        cursor.execute("CREATE EXTENSION IF NOT EXISTS pgcrypto;")
+        cursor.execute("""  
+        CREATE TABLE IF NOT EXISTS job (  
+            "id" UUID DEFAULT gen_random_uuid() PRIMARY KEY,  
+            "jobId" TEXT DEFAULT '',  
+            "title" TEXT DEFAULT '',  
+            "description" TEXT DEFAULT '',  
+            "location" TEXT DEFAULT '',  
+            "country" TEXT DEFAULT '',  
+            "state" TEXT DEFAULT '',  
+            "city" TEXT DEFAULT '',  
+            "jobType" TEXT DEFAULT 'fullTime',  
+            "salary" TEXT DEFAULT '',  
+            "skills" TEXT[] DEFAULT '{}',  
+            "experienceLevel" TEXT DEFAULT 'experienced',  
+            "currency" TEXT DEFAULT '',
+            "applicationUrl" TEXT DEFAULT '',  
+            "benefits" TEXT[] DEFAULT '{}',  
+            "approvalStatus" TEXT,  
+            "brokenLink" BOOLEAN DEFAULT FALSE,  
+            "jobStatus" TEXT DEFAULT 'active', 
+            "responsibilities" TEXT[] DEFAULT '{}',  
+            "workSettings" TEXT,  
+            "roleCategory" TEXT DEFAULT '',  
+            "qualifications" TEXT[] DEFAULT '{}',  
+            "companyLogo" TEXT DEFAULT '',  
+            "companyName" TEXT,
+            "ipBlocked" BOOLEAN DEFAULT FALSE,  
+            "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
+            "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            "minSalary" INTEGER DEFAULT 0,
+            "maxSalary" INTEGER DEFAULT 0,
+            "postedDate" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            "category" TEXT
+        )  
+        """)
+
+        # Load data
+        if isinstance(json_file, str):
+            try:
+                with open(json_file, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+            except UnicodeDecodeError:
+                with open(json_file, 'r', encoding='utf-8-sig') as f:
+                    data = json.load(f)
+            df = pd.DataFrame(data)
+            logger.info(f"Loaded {len(df)} jobs from file")
+        else:
+            df = pd.DataFrame(json_file)
+            logger.info(f"Loaded {len(df)} jobs from direct input")
         
-    #     host=HOST,
-    #     database=DATABASE,
-    #     user=USER,
-    #     password=PASSWORD
-    # )
-    
+        # Data cleaning
+        initial_count = len(df)
+        df = df[df['title'].notna() & (df['title'].astype(str).str.strip() != '')]
+        logger.info(f"Filtered {initial_count - len(df)} jobs with empty titles")
+        
+        if len(df) == 0:
+            logger.warning("No valid jobs to insert after filtering")
+            return "No valid jobs to insert after filtering"
+
+        # Prepare rows for insertion
+        rows = []
+        for _, row in df.iterrows():
+            try:
+                max_salary = row.get('maxSalary', 0)
+                min_salary = row.get('minSalary', 0)
+                max_salary = 0 if pd.isna(max_salary) else int(max_salary)
+                min_salary = 0 if pd.isna(min_salary) else int(min_salary)
+                
+                # posted_date = parse_posted_date(row.get('postedDate'))
+                
+                rows.append((
+                    row.get('companyName', ''),
+                    row.get('companyLogo', ''),
+                    row.get('jobId', ''),  
+                    row.get('title', ''), 
+                    row.get('location', ''), 
+                    row.get('salary', ''),
+                    row.get('description', ''), 
+                    row.get('roleCategory', ''),
+                    row.get('jobType'), 
+                    clean_array_string(row.get('responsibilities')),
+                    clean_array_string(row.get('skills')),
+                    row.get('applicationUrl', ''), 
+                    row.get('country', ''), 
+                    row.get('state', ''), 
+                    row.get('city', ''),
+                    row.get('currency', ''),
+                    max_salary,
+                    min_salary,
+                    clean_array_string(row.get('qualifications')),
+                    row.get('experienceLevel', ''),
+                    clean_array_string(row.get('benefits', [])),
+                    row.get('workSettings', ''),
+                    # posted_date,
+                    row.get('postedDate'),
+                    row.get('category', '')
+                ))
+            except Exception as e:
+                logger.error(f"Error processing row: {e}")
+                continue
+
+        if not rows:
+            logger.warning("No valid rows to insert after processing")
+            return "No valid rows to insert after processing"
+
+        # Insert data
+        insert_query = """
+            INSERT INTO job (
+                "companyName", "companyLogo",
+                "jobId", title, location, salary, 
+                description, "roleCategory", "jobType", responsibilities, skills,   
+                "applicationUrl", country, state, city, currency, 
+                "minSalary", "maxSalary", qualifications, "experienceLevel", 
+                benefits, "workSettings", "postedDate", category
+            ) VALUES %s
+            ON CONFLICT ("jobId") DO NOTHING
+        """
+        execute_values(cursor, insert_query, rows)
+        conn.commit()
+        
+        success_msg = f"Successfully inserted {len(rows)} records"
+        logger.info(success_msg)
+        return success_msg
+        
+    except psycopg2.Error as e:
+        logger.error(f"Database error: {e}")
+        if conn:
+            conn.rollback()
+        return f"Database error: {e}"
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        if conn:
+            conn.rollback()
+        return f"Unexpected error: {e}"
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+if __name__ == "__main__":
+    # Example usage
+    json_file = r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\grand_jobs_list.json"
+    # load_json_to_db(json_file)
+    print("Host", HOST)
+    db_params = {
+    'host': 'localhost',
+    'database': 'jobs_db',
+    'user': 'postgres',
+    'password': 'secret'
+}
+    load_json_to_db(json_file)
+    fetch_jobs_from_db(host=HOST, database=DATABASE, user=USER, password=PASSWORD)
+    # delete_job_by_id("JOB-003", HOST, DATABASE, USER, PASSWORD)
+    # find_salary_rows()
+    # find_special_salary_rows()
+    # update_salary_from_json("path_to_your_json_file.json", HOST, DATABASE, USER, PASSWORD)
+    # remove_duplicate_jobids(HOST, DATABASE, USER, PASSWORD)
+    # add_unique_constraint_on_jobid(HOST, DATABASE, USER, PASSWORD)    
     
     
     
