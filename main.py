@@ -13,9 +13,11 @@ from utils.logger import setup_scraping_logger
 from utils.email_sender import send_completion_email
 logger = setup_scraping_logger(name="Job scrapinng")
 
-def generate_unique_id(data):
+
+
+def generate_unique_id(data, company_name):
     job_id_raw = (data.get("jobId") or "").strip()
-    company_name = (data.get("companyName") or "").strip().replace(" ", "_").lower()
+    company_name = (data.get("companyName") or company_name).strip().replace(" ", "_").lower()
 
     if job_id_raw:
         return f"{company_name}_{job_id_raw}"
@@ -52,7 +54,8 @@ async def run():
     print("open ai key", openai_api_token[:4])
     print("open ai provider", open_provider[:4])
         
-    urls = load_urls_from_csv(r"treat_static_job.csv",column_name='power_url',column_css="wait_for")
+    urls = load_urls_from_csv(r"updated_treated_source.csv",column_name='power_url',column_css="wait_for")
+    # urls = urls[1:2]  # Limit to first 1 URLs for testing
     logger.info(f"Found {len(urls)} sites")
     grand_jobs_list = []
      
@@ -83,16 +86,13 @@ async def run():
             
             
             if jobs_per_site:
-                # append_jsonl(jobs_per_site, filename=f"{company_name}_backup.jsonl")
-               
                 print(f"<<<<<< ✅Scraping detail page✅ >>>>>>")
                 for m, job in enumerate(jobs_per_site):
                   
                     print(f"\n📄 Processing {m+1}/{len(jobs_per_site)}: {company_name}")
                     logger.info(f"Processing {m+1}/{len(jobs_per_site)}: {company_name}")
-                    # print("job", job)
                     application_url = job.get("applicationUrl")
-                    print("applicayion", application_url)
+                    print("application", application_url)
                     if not application_url:
                         print(f"⚠️ Missing application URL for job: {job.get('title')}")
                         continue
@@ -102,7 +102,7 @@ async def run():
                     postedDate=convert_date(postedDate)
                     site_postedDate= job.get("postedDate") or data.get("postedDate")
                     # connstruct_jobid to track duplicates
-                    jobId = generate_unique_id(data)
+                    jobId = generate_unique_id(data, company_name)
                     print("unique job id", jobId)
                     list_data = {
                         "jobId":jobId,
@@ -126,7 +126,7 @@ async def run():
                         "roleCategory":data.get("roleCategory"),
                         "qualifications":data.get("qualifications"),
                         "companyLogo":data.get("companyLogo"),
-                        "companyName":data.get("companyName"),
+                        "companyName":data.get("companyName", company_name),
                         "minSalary":data.get("minSalary"),
                         "maxSalary":data.get("maxSalary"),
                         "postedDate":site_postedDate or postedDate,
@@ -155,12 +155,23 @@ async def run():
         
 if __name__ == "__main__":
    
-    result = asyncio.run(run())    
+    result = asyncio.run(run())   
     
+    DATABASE = os.getenv("DATABASE")
+    USER = os.getenv("USER")
+    HOST = os.getenv("HOST")
+    PASSWORD = os.getenv("PASSWORD") 
+    
+    db_params = {
+    'host': HOST,
+    'database': DATABASE,
+    'user': USER,
+    'password': PASSWORD
+     }
     failed_jobs = []
     if result:
         # save to database
-        laod_data = load_json_to_db(result)
+        laod_data = load_json_to_db(result, db_params)
         print("print saved ✅✅✈️✅")
     try:
         with open("failed_jobs.json", "r", encoding="utf-8") as f:
