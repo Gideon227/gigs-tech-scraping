@@ -331,13 +331,23 @@ def fetch_jobs_from_db(host, database, user, password):
             password=password
         )
         cursor = conn.cursor()
-        cursor.execute("SELECT COUNT(*) FROM job")
-        count = cursor.fetchone()[0]
-        print("Total records:", count)
+        
+        cursor.execute('SELECT "createdAt", "updatedAt" FROM job WHERE "jobId" = %s', ('nigel_frank_international_a0MaA000000fipt.2_1754359649',))
+        # cursor.execute('SELECT "updatedAt" FROM job WHERE "jobId" LIKE %s', ('nigel_frank_international%',))
+        result = cursor.fetchall()
+        print("result", result)
+        print()
+        print()
+        print("Created at:", result[0][0] if result else "No record found")
+        print("Updated at:", result[0][1] if result else "No record found")
+        # print("Updated at:", result[0] if result else "No record found")
+        # cursor.execute("SELECT COUNT(*) FROM job")
+        # count = cursor.fetchone()[0]
+        # print("Total records:", count)
+        # print("count",count)
       
        
     
-        print("count",count)
         conn.commit()
         # Clean up
         cursor.close()
@@ -570,7 +580,7 @@ def load_json_to_db(json_file, db_params):
                 benefits, "workSettings", "postedDate", category
             ) VALUES %s
             ON CONFLICT ("jobId") DO UPDATE
-            SET "updatedAt" = NOW()
+            SET title = EXCLUDED.title, "updatedAt" = NOW()
 
         """
         # ON CONFLICT ("jobId") DO NOTHING
@@ -601,6 +611,7 @@ def load_json_to_db(json_file, db_params):
 if __name__ == "__main__":
     # Example usage
     json_file = r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\grand_jobs_list.json"
+    # C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\grand_jobs_list.json
     
     db_params = {
     'host': HOST,
@@ -608,9 +619,10 @@ if __name__ == "__main__":
     'user': USER,
     'password': PASSWORD
 }
+    # nigel_frank_international_a0MP9000009GMQn.1_1753952304
     # load_json_to_db(json_file, db_params)
-    # # load_json_to_db_pt(json_file)
-    delete_job_by_id("JOB-003", HOST, DATABASE, USER, PASSWORD)
+    # load_json_to_db_pt(json_file)
+    # delete_job_by_id("JOB-003", HOST, DATABASE, USER, PASSWORD)
     fetch_jobs_from_db(host=HOST, database=DATABASE, user=USER, password=PASSWORD)
     # find_salary_rows()
     # find_special_salary_rows()
