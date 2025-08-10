@@ -18,11 +18,7 @@ load_dotenv()
 # PASSWORD = os.getenv("PASSWORD")
 # DATABASE_URL = os.getenv("DATABASE_URL")
 
-# user: 'shahen',
-#   host: 'gigs-tech-prod-rds.cbiiywio2rr0.us-east-2.rds.amazonaws.com',
-#   database: 'gigs-tech',
-#   password: 'Zebra8!Moon$',
-#   port: 5432,
+
 
 DATABASE = os.getenv("DB_NAME")
 USER = os.getenv("PG_USER")
@@ -610,8 +606,9 @@ def load_json_to_db(json_file, db_params):
 
 if __name__ == "__main__":
     # Example usage
-    json_file = r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\grand_jobs_list.json"
-    # C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\grand_jobs_list.json
+
+    # json_file = r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\grand_jobs_list.json"
+
     
     db_params = {
     'host': HOST,
@@ -621,9 +618,10 @@ if __name__ == "__main__":
 }
     # nigel_frank_international_a0MP9000009GMQn.1_1753952304
     # load_json_to_db(json_file, db_params)
-    # load_json_to_db_pt(json_file)
+    # # load_json_to_db_pt(json_file)
     # delete_job_by_id("JOB-003", HOST, DATABASE, USER, PASSWORD)
-    fetch_jobs_from_db(host=HOST, database=DATABASE, user=USER, password=PASSWORD)
+    # fetch_jobs_from_db(host=HOST, database=DATABASE, user=USER, password=PASSWORD)
+
     # find_salary_rows()
     # find_special_salary_rows()
     # update_salary_from_json("path_to_your_json_file.json", HOST, DATABASE, USER, PASSWORD)
