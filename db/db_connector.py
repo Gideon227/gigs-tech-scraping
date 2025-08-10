@@ -569,8 +569,11 @@ def load_json_to_db(json_file, db_params):
                 "minSalary", "maxSalary", qualifications, "experienceLevel", 
                 benefits, "workSettings", "postedDate", category
             ) VALUES %s
-            ON CONFLICT ("jobId") DO NOTHING
+            ON CONFLICT ("jobId") DO UPDATE
+            SET "updatedAt" = NOW()
+
         """
+        # ON CONFLICT ("jobId") DO NOTHING
         execute_values(cursor, insert_query, rows)
         conn.commit()
         
