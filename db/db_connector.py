@@ -517,7 +517,8 @@ def load_json_to_db(json_file, db_params):
         # Data cleaning
         initial_count = len(df)
         df = df[df['title'].notna() & (df['title'].astype(str).str.strip() != '')]
-        logger.info(f"Filtered {initial_count - len(df)} jobs with empty titles")
+        df = df.drop_duplicates(subset='jobId', keep='last')
+        logger.info(f"Filtered {initial_count - len(df)} jobs with empty titles and duplicates")
         
         if len(df) == 0:
             logger.warning("No valid jobs to insert after filtering")
