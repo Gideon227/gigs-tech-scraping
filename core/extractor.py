@@ -26,7 +26,7 @@ async def job_list_extractor(url: dict, provider: str, api_token: str = None, ex
             extraction_type="schema",
             instruction="""
             Extract the following job-related fields from the HTML content of the job page:
-            jobId, title, applicationUrl, postedDate
+            jobId, title, applicationUrl, postedDate, companyName
             
             Return result as a Python dictionary with matching keys. Use empty string or default if not found.
             """,
