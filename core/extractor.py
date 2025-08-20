@@ -347,14 +347,18 @@ async def keyword_first_job_list(site: dict, keyword: str, provider: str, api_to
         # Query-param pagination using static extractor per page
         base = site["search_url_template"].replace("{q}", keyword)
         max_pages = int(site.get("max_pages") or 50)
+        numberOfPages = None # Initialize
         for p in range(1, max_pages + 1):
             page_url = await _apply_query_param(base, site["pagination_param"], p)
             page_jobs = await _collect_static_page(page_url, wait_for, provider, api_token)
             if not page_jobs:
                 break
-            numberOfPages = page_jobs[0]['numberOfPages'] or None
-            if numberOfPages is not None and numberOfPages == p: continue 
-            results.extend(page_jobs or [])
+              # Set numberOfPages only on the first page
+        if p == 1:
+            numberOfPages = page_jobs[0].get('numberOfPages') or None
+            if numberOfPages is not None:
+                max_pages = min(max_pages, numberOfPages)
+        results.extend(page_jobs or [])
         # Dedup by applicationUrl
         seen = set()
         unique = []
