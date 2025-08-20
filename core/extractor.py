@@ -354,11 +354,11 @@ async def keyword_first_job_list(site: dict, keyword: str, provider: str, api_to
             if not page_jobs:
                 break
               # Set numberOfPages only on the first page
-        if p == 1:
-            numberOfPages = page_jobs[0].get('numberOfPages') or None
-            if numberOfPages is not None:
-                max_pages = min(max_pages, numberOfPages)
-        results.extend(page_jobs or [])
+            if p == 1:
+                numberOfPages = page_jobs[0].get('numberOfPages') or None
+                if numberOfPages is not None:
+                    max_pages = min(max_pages, numberOfPages)
+            results.extend(page_jobs or [])
         # Dedup by applicationUrl
         seen = set()
         unique = []
