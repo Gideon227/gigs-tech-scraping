@@ -59,7 +59,7 @@ def _load_keywords():
     raw = os.getenv("JOB_KEYWORDS")
     if not raw:
         return [
-            # "power platform",
+            "power platform",
             # "power",
             "dynamics 356",
             # "dynamic",
