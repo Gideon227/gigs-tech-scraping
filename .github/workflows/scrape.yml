@@ -10,7 +10,7 @@ jobs:
     # container:
     #   image: mcr.microsoft.com/playwright:v1.40.0-jammy
     runs-on: ubuntu-latest
-    environment: production
+    environment: Production
     steps:
       - uses: actions/checkout@v3
 
