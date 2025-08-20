@@ -1,3 +1,2 @@
 url,wait_for,search_url_template,pagination_param,search_input_selector,search_submit_selector,search_enter,results_container_selector,job_link_selector,job_card_selector,modal_selector,modal_apply_link_selector,modal_close_selector,pagination_next_selector,infinite_scroll,max_pages,company_name
-https://www.nigelfrank.com/microsoft-jobs,.overview,https://www.nigelfrank.com/microsoft-jobs?keyword={q}&page={p},page,,,,.overview,a.job-title,,,,,,false,50,Nigel Frank
-
+https://www.nigelfrank.com/microsoft-jobs,.overview,https://www.nigelfrank.com/microsoft-jobs?keyword={q}&page={p}&newJobs=true,page,,,,.overview,a.job-title,,,,,,false,17,Nigel Frank

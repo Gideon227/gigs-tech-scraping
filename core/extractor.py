@@ -33,7 +33,7 @@ async def job_list_extractor(url: dict, provider: str, api_token: str = None, ex
             extraction_type="schema",
             instruction="""
             Extract the following job-related fields from the HTML content of the job page:
-            jobId, title, applicationUrl, postedDate, companyName
+            jobId, title, applicationUrl, postedDate, companyName and numberOfPages
 
             Return result as a Python dictionary with matching keys. Use empty string or default if not found.
             """,
@@ -62,6 +62,7 @@ async def job_list_extractor(url: dict, provider: str, api_token: str = None, ex
             jobs = [content]
         else:
             jobs = []
+        print("job sample", jobs[0])    
         return jobs
 
 # -------------------------------
@@ -332,6 +333,7 @@ async def _search_and_paginate_with_playwright(site: dict, keyword: str) -> list
         r["postedDate"] = parse_posted_date(r.get("postedDate", ""))
     return results
 
+
 async def keyword_first_job_list(site: dict, keyword: str, provider: str, api_token: str) -> list:
     """High-level coordinator.
     Preference order:
@@ -348,9 +350,11 @@ async def keyword_first_job_list(site: dict, keyword: str, provider: str, api_to
         for p in range(1, max_pages + 1):
             page_url = await _apply_query_param(base, site["pagination_param"], p)
             page_jobs = await _collect_static_page(page_url, wait_for, provider, api_token)
-            results.extend(page_jobs or [])
             if not page_jobs:
                 break
+            numberOfPages = page_jobs[0]['numberOfPages'] or None
+            if numberOfPages is not None and numberOfPages == p: continue 
+            results.extend(page_jobs or [])
         # Dedup by applicationUrl
         seen = set()
         unique = []

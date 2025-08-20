@@ -3,6 +3,7 @@ import os
 import json
 import hashlib
 from datetime import datetime, timedelta
+import time
 from core.extractor import job_detail_extractor_from_url, keyword_first_job_list  # both come from extractor.py
 from utils.temp_store import save_failed
 from db.db_connector import load_json_to_db
@@ -58,10 +59,10 @@ def _load_keywords():
     raw = os.getenv("JOB_KEYWORDS")
     if not raw:
         return [
-            "power platform",
-            "power",
+            # "power platform",
+            # "power",
             "dynamics 356",
-            "dynamic",
+            # "dynamic",
             # "dynamics crm",
             # "dataverse",
             # "Power Apps",
@@ -121,11 +122,10 @@ async def run():
 
     # urls = load_urls_from_csv("updated_treated_source.csv", column_name='url', column_css="wait_for")
     urls = load_urls_from_csv("job_scraper_template.csv", column_name='url', column_css="wait_for")
-    # urls=urls[0]
+  
     print('url', urls)
     print('url len', len(urls))
     logger.info(f"Found {len(urls)} sites")
-    
     keywords = _load_keywords()
     logger.info(f"Using keywords: {keywords}")
     
@@ -137,7 +137,7 @@ async def run():
         print("===========")
         print("site", site)
         company_job_list = []
-        company_name = site.get("company_name") or site.get("company") or ""
+        company_name = site.get("company_name") or ""
         try:
             logger.info(f"Processing {i+1}/{len(urls)}: {company_name}")
 
@@ -221,6 +221,8 @@ async def run():
                     grand_jobs_list.append(list_data)
         except Exception as e:
             save_failed({"url": site, "error": str(e)})
+            continue # continue
+            # return grand_jobs_list
 
         logger.info(f"Save {len(company_job_list)} for {company_name}")
         print(f"Save {len(company_job_list)} for {company_name}")
@@ -246,15 +248,35 @@ if __name__ == "__main__":
 
     failed_jobs = []
     saved_count = 0
-    if result:
-        saved_count = load_json_to_db(result, db_params)  # upsert handled inside
-        print("print saved ✅✅✈️✅")
+    # if result:
+    #     try:
+    #         saved_count = load_json_to_db(result, db_params)  # upsert handled inside
+    #         print("print saved ✅✅✈️✅")
+    #     except Exception as e:
+    #         print("unable to save job to database")  
+    
+max_retries = 3
+retry_delay = 5  # seconds
+if result:
+    for attempt in range(max_retries):
+        try:
+            saved_count = load_json_to_db(result, db_params)
+            print("print saved ✅✅✈️✅")
+            break  # success, exit loop
+        except Exception as e:
+            print(f"Attempt {attempt + 1} failed: {str(e)}")
+            if attempt < max_retries - 1:
+                print(f"Retrying in {retry_delay} seconds...")
+                time.sleep(retry_delay)
+            else:
+                print("❌ All retries failed. Unable to save job to database.")
+  
 
-    try:
-        with open("failed_jobs.json", "r", encoding="utf-8") as f:
-            failed_jobs = json.load(f)
-    except Exception:
-        pass
+try:
+    with open("failed_jobs.json", "r", encoding="utf-8") as f:
+        failed_jobs = json.load(f)
+except Exception:
+    pass
 
     success_count = len(result or [])
     failed_count = len(failed_jobs)

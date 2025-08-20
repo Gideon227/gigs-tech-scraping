@@ -328,19 +328,19 @@ def fetch_jobs_from_db(host, database, user, password):
         )
         cursor = conn.cursor()
         
-        cursor.execute('SELECT "createdAt", "updatedAt" FROM job WHERE "jobId" = %s', ('nigel_frank_international_a0MaA000000fipt.2_1754359649',))
-        # cursor.execute('SELECT "updatedAt" FROM job WHERE "jobId" LIKE %s', ('nigel_frank_international%',))
-        result = cursor.fetchall()
-        print("result", result)
-        print()
-        print()
-        print("Created at:", result[0][0] if result else "No record found")
-        print("Updated at:", result[0][1] if result else "No record found")
+        # cursor.execute('SELECT "createdAt", "updatedAt" FROM job WHERE "jobId" = %s', ('nigel_frank_international_a0MaA000000fipt.2_1754359649',))
+        # # cursor.execute('SELECT "updatedAt" FROM job WHERE "jobId" LIKE %s', ('nigel_frank_international%',))
+        # result = cursor.fetchall()
+        # print("result", result)
+        # print()
+        # print()
+        # print("Created at:", result[0][0] if result else "No record found")
+        # print("Updated at:", result[0][1] if result else "No record found")
         # print("Updated at:", result[0] if result else "No record found")
-        # cursor.execute("SELECT COUNT(*) FROM job")
-        # count = cursor.fetchone()[0]
-        # print("Total records:", count)
-        # print("count",count)
+        cursor.execute("SELECT COUNT(*) FROM job")
+        count = cursor.fetchone()[0]
+        print("Total records:", count)
+        print("count",count)
       
        
     
@@ -609,6 +609,7 @@ if __name__ == "__main__":
     # Example usage
 
     # json_file = r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\grand_jobs_list.json"
+    # json_file = r"C:\Users\David\OneDrive\Desktop\web scrap\llm-job-scrap\new_grand_jobs_list.json"
 
     
     db_params = {
