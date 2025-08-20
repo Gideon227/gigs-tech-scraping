@@ -17,7 +17,7 @@ async def job_list_extractor(url: dict, provider: str, api_token: str = None, ex
     Accepts url dict: {"url": str, "wait_for": str}
     Returns a list of jobs with minimal fields.
     """
-    browser_config = BrowserConfig(headless=False, text_mode=True)
+    browser_config = BrowserConfig(headless=True, text_mode=True)
     extra_args = {"temperature": 0, "top_p": 0.9, "max_tokens": 2000}
     if extra_headers:
         extra_args["extra_headers"] = extra_headers
