@@ -59,9 +59,9 @@ def _load_keywords():
     raw = os.getenv("JOB_KEYWORDS")
     if not raw:
         return [
+            "dynamics 356",
             "power platform",
             # "power",
-            "dynamics 356",
             # "dynamic",
             # "dynamics crm",
             # "dataverse",
@@ -132,10 +132,6 @@ async def run():
     grand_jobs_list = []
 
     for i, site in enumerate(urls):
-        print()
-        print()
-        print("===========")
-        print("site", site)
         company_job_list = []
         company_name = site.get("company_name") or ""
         try:

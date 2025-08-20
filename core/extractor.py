@@ -61,8 +61,7 @@ async def job_list_extractor(url: dict, provider: str, api_token: str = None, ex
             content['postedDate'] = parse_posted_date(raw_date)
             jobs = [content]
         else:
-            jobs = []
-        print("job sample", jobs[0])    
+            jobs = []   
         return jobs
 
 # -------------------------------
@@ -355,9 +354,12 @@ async def keyword_first_job_list(site: dict, keyword: str, provider: str, api_to
                 break
               # Set numberOfPages only on the first page
             if p == 1:
-                numberOfPages = page_jobs[0].get('numberOfPages') or None
+                numberOfPages = int(page_jobs[0].get('numberOfPages')) or None
+                print(f"Found {numberOfPages} of pages...✅✅")
                 if numberOfPages is not None:
+                    print(f"Initial page {max_pages}, now too {numberOfPages} of pages...✅✅")
                     max_pages = min(max_pages, numberOfPages)
+                    print(f"Using the min {max_pages} of pages...✅✅")
             results.extend(page_jobs or [])
         # Dedup by applicationUrl
         seen = set()
@@ -367,6 +369,8 @@ async def keyword_first_job_list(site: dict, keyword: str, provider: str, api_to
             if u and u not in seen:
                 seen.add(u)
                 unique.append(j)
+                
+        print(f"Found{len(results)}, but {len(unique)} are unique")        
         return unique
 
     # Default to Playwright for DOM search / next-button / infinite scroll / modals
