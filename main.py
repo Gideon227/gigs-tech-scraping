@@ -10,6 +10,7 @@ from db.db_connector import load_json_to_db
 from utils.load_url import load_urls_from_csv
 from utils.logger import setup_scraping_logger
 from utils.email_sender import send_completion_email
+from utils.load_key import load_env_from_ssm
 
 # Optional: WhatsApp via Twilio
 # try:
@@ -24,7 +25,6 @@ logger = setup_scraping_logger(name="Job scraping")
 # -------------------------------
 
 
-from utils.load_key import load_env_from_ssm
 
 # Load env from SSM once at startup
 load_env_from_ssm({
@@ -82,7 +82,7 @@ def convert_date(obj):
         return obj.isoformat()
     return f"{obj}"
 
-def save_to_json(data, filename="new_grand_jobs_list.json"):
+def save_to_json(data, filename=f"new_grand_jobs_list_{datetime.now()}.json"):
     with open(filename, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
         return filename
@@ -301,7 +301,7 @@ if result:
   
 
 try:
-    with open("failed_jobs.json", "r", encoding="utf-8") as f:
+    with open(f"failed_jobs_{datetime.now()}.json", "r", encoding="utf-8") as f:
         failed_jobs = json.load(f)
 except Exception:
     pass
