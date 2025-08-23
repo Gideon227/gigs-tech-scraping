@@ -12,19 +12,12 @@ import logging
 
 
 load_dotenv()
-# DATABASE = os.getenv("DATABASE")
-# USER = os.getenv("USER")
-# HOST = os.getenv("HOST")
-# PASSWORD = os.getenv("PASSWORD")
-# DATABASE_URL = os.getenv("DATABASE_URL")
-
-
 
 DATABASE = os.getenv("DB_NAME")
 USER = os.getenv("PG_USER")
 HOST = os.getenv("PG_HOST")
 PASSWORD = os.getenv("PG_PASSWORD")
-DATABASE_URL = os.getenv("DATABASE_URL")
+
 # Configure logging
 # logger = setup_scraping_logger("db_connector")
 logger = logging.getLogger("db_connector")

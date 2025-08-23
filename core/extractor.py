@@ -179,7 +179,7 @@ async def _search_and_paginate_with_playwright(site: dict, keyword: str) -> list
     Returns a list of lightweight job dicts: {title, applicationUrl, postedDate, companyName}
     """
     results = []
-    max_pages = int(site.get("max_pages") or 50)  # guardrail only
+    max_pages = int(site.get("max_pages") or 10)  # guardrail only
     wait_for = site.get("wait_for") or "body"
 
     search_url_template = site.get("search_url_template")

@@ -20,8 +20,49 @@ from utils.email_sender import send_completion_email
 logger = setup_scraping_logger(name="Job scraping")
 
 # -------------------------------
-# Helpers (unchanged + new)
+# Helpers 
 # -------------------------------
+
+
+from utils.load_key import load_env_from_ssm
+
+# Load env from SSM once at startup
+load_env_from_ssm({
+    # OPENAI 
+    "PROVIDER": "/job-scraper/PROVIDER",
+    "OPENAI_API_KEY": "/job-scraper/OPENAI_API_KEY",
+    # DATABASE
+    "PG_HOST": "/job-scraper/PG_HOST",
+    "PG_PORT": "/job-scraper/PG_PORT",
+    "PG_USER": "/job-scraper/PG_USER",
+    "PG_PASSWORD": "/job-scraper/PG_PASSWORD",
+    "DB_NAME": "/job-scraper/DB_NAME",
+    # ALERT
+    "MAIL_USERNAME": "/job-scraper/MAIL_USERNAME",
+    "MAIL_PASSWORD": "/job-scraper/MAIL_PASSWORD",
+     "MAIL_FROM": "/job-scraper/MAIL_FROM",
+     "MAIL_FROM_NAME": "/job-scraper/MAIL_FROM_NAME",
+     "MAIL_PORT": "/job-scraper/MAIL_PORT",
+     "MAIL_SERVER": "/job-scraper/MAIL_SERVER",
+    "MAIL_TO": "/job-scraper/MAIL_TO",
+    # "SMTP_HOST": "/job-scraper/SMTP_HOST",
+    # "SMTP_USER": "/job-scraper/SMTP_USER",
+    # "SMTP_PASSWORD": "/job-scraper/SMTP_PASSWORD",
+    # "TWILIO_ACCOUNT_SID": "/job-scraper/TWILIO_ACCOUNT_SID",
+    # "TWILIO_AUTH_TOKEN": "/job-scraper/TWILIO_AUTH_TOKEN",
+    # "TWILIO_WHATSAPP_FROM": "/job-scraper/TWILIO_WHATSAPP_FROM",
+    # "TWILIO_WHATSAPP_TO": "/job-scraper/TWILIO_WHATSAPP_TO",
+    # "S3_BUCKET": "/job-scraper/S3_BUCKET",
+    # "S3_PREFIX": "/job-scraper/S3_PREFIX",  
+})
+
+
+# -------------------------------
+# Helpers 
+# -------------------------------
+
+
+
 
 def generate_unique_id(data, company_name):
     job_id_raw = (data.get("jobId") or "").strip()
@@ -35,10 +76,6 @@ def generate_unique_id(data, company_name):
     hash_digest = hashlib.sha256(fallback_string.encode("utf-8")).hexdigest()[:10]
     return f"{company_name}_{hash_digest}"
 
-def append_jsonl(data, filename="bo_job_data_llm_single.jsonl"):
-    with open(filename, "a", encoding="utf-8") as f:
-        json.dump(data, f)
-        f.write("\n")
 
 def convert_date(obj):
     if isinstance(obj, datetime):
@@ -111,7 +148,7 @@ def _is_within_days(dt_str: str, days: int = 30) -> bool:
     return (datetime.now() - dt) <= timedelta(days=days)
 
 # -------------------------------
-# Main run
+ # Main run
 # -------------------------------
 async def run():
     print("start function ✈️✈️")
@@ -152,7 +189,7 @@ async def run():
                     })
                     continue
 
-                logger.info(f"{company_name}  '{kw}' → {len(seed_jobs)} jobs (pre-filter)")
+                logger.info(f"{company_name}  '{kw}' → {len(seed_jobs)} job-scraper (pre-filter)")
                 print(f"<<<<<< ✅ Detail scraping for {company_name}  '{kw}' ✅ >>>>>>")
 
                 # Detail stage
@@ -230,10 +267,10 @@ async def run():
 if __name__ == "__main__":
     result = asyncio.run(run())
 
-    DATABASE = os.getenv("DATABASE")
-    USER = os.getenv("USER")
-    HOST = os.getenv("HOST")
-    PASSWORD = os.getenv("PASSWORD")
+    DATABASE = os.getenv("DB_NAME")
+    USER = os.getenv("PG_USER")
+    HOST = os.getenv("PG_HOST")
+    PASSWORD = os.getenv("PG_PASSWORD")
 
     db_params = {
         'host': HOST,
@@ -244,12 +281,7 @@ if __name__ == "__main__":
 
     failed_jobs = []
     saved_count = 0
-    # if result:
-    #     try:
-    #         saved_count = load_json_to_db(result, db_params)  # upsert handled inside
-    #         print("print saved ✅✅✈️✅")
-    #     except Exception as e:
-    #         print("unable to save job to database")  
+   
     
 max_retries = 3
 retry_delay = 5  # seconds
