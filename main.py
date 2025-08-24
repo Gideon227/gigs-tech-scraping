@@ -11,6 +11,7 @@ from utils.load_url import load_urls_from_csv
 from utils.logger import setup_scraping_logger
 from utils.email_sender import send_completion_email
 from utils.load_key import load_env_from_ssm
+from main2 import run as scraper
 
 # Optional: WhatsApp via Twilio
 # try:
@@ -173,7 +174,7 @@ async def run():
         company_name = site.get("company_name") or ""
         try:
             logger.info(f"Processing {i+1}/{len(urls)}: {company_name}")
-
+            
             for kw in keywords:
                 try:
                     # Keyword-first collection of application URLs
@@ -264,9 +265,31 @@ async def run():
     print("saved to file:", final_data_path)
     return grand_jobs_list
 
-if __name__ == "__main__":
-    result = asyncio.run(run())
 
+async def main():
+    first_data = []
+    second_data= []
+    
+    try:
+        first_data = await run()  
+    except Exception as e:
+        print(f"First run failed: {e}")   
+        
+    try:  
+        second_data = await scraper()
+    except Exception as e:
+        print(f"Second run failed: {e}") 
+    print(f"Len of fisrt {len(first_data)}, second: {len(second_data)} ")         
+    return first_data, second_data
+
+
+if __name__ == "__main__":
+    first_data, second_data = asyncio.run(main())
+    # merge both result
+    result = (first_data or []) + (second_data or [])
+    print(f"merge len: {len(result)}")
+    # second_run = asyncio.run(scraper())
+    # scraper()
     DATABASE = os.getenv("DB_NAME")
     USER = os.getenv("PG_USER")
     HOST = os.getenv("PG_HOST")
