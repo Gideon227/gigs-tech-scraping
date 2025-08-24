@@ -172,18 +172,20 @@ async def _collect_static_page(url: str, wait_for: str, provider: str, api_token
     return await job_list_extractor({"url": url, "wait_for": wait_for}, provider, api_token)
 
 async def _search_and_paginate_with_playwright(site: dict, keyword: str) -> list:
+    
     """Use Playwright to:
     - Go to search URL or type keyword
     - Handle pagination (next button, infinite scroll)
     - Collect job HREFs (static) OR open each card, scrape modal to find the apply/detail URL
     Returns a list of lightweight job dicts: {title, applicationUrl, postedDate, companyName}
     """
+    
     results = []
     max_pages = int(site.get("max_pages") or 10)  # guardrail only
     wait_for = site.get("wait_for") or "body"
 
     search_url_template = site.get("search_url_template")
-    start_url = site.get("power_url") or site.get("url")
+    start_url = site.get("url") 
     if search_url_template:
         start_url = search_url_template.replace("{q}", keyword)
 

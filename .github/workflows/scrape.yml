@@ -2,7 +2,7 @@ name: Scrape Jobs Production
 
 on:
   schedule:
-    - cron: '0 18 * * *'  # Runs every day at 6:00 PM UTC (7:00 PM WAT)
+    # - cron: '0 18 * * *'  # Runs every day at 6:00 PM UTC (7:00 PM WAT)
   workflow_dispatch:
 
 jobs:
