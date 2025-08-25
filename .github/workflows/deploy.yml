@@ -19,7 +19,8 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /opt/job-scraper/gigs-tech-scraping
-            git pull origin pipeline
+            cd /opt/job-scraper 
             source venv/bin/activate
+            cd /gigs-tech-scraping
+            git pull origin pipeline
             #pip install -r requirements.txt
