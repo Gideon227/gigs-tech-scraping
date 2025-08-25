@@ -1,0 +1,66 @@
+,url,wait_for,search_url_template,pagination_param,search_input_selector,search_submit_selector,search_enter,results_container_selector,job_link_selector,job_card_selector,modal_selector,modal_apply_link_selector,modal_close_selector,pagination_next_selector,infinite_scroll,max_pages,company_name
+0,https://www.accenture.com/us-en/careers/jobsearch,.rad-filters-vertical__job-card,https://www.accenture.com/us-en/careers/jobsearch?jk=%7Bq%7D&sb=1,,,,,,,,,,,,,,accenture
+1,https://www.nigelfrank.com/microsoft-jobs,.overview,https://www.nigelfrank.com/microsoft-jobs?keyword=%7Bq%7D&location=&jobType=both&page=%7Bp%7D&remote=&security=&newJobs=true&salaryFrom=&salaryTo=&salaryCurrency=&segment=&product=,page,,,,,,,,,,,False,,nigel_frank_international
+2,https://www.avanade.com/en/career/search-jobs,.jobCard,https://www.avanade.com/en/career/search-jobs#q=%7Bq%7D&sortCriteria=%40job_area_of_expertise+ascending,,,,,,,,,,,,,,avanade
+3,https://apply.deloitte.com/en_US/careers/SearchJobs/power%20platform,.article--result,https://apply.deloitte.com/en_US/careers/SearchJobs/power%20platform?9353=%5B95157%2C95156%5D&9353_format=6067&listFilterMode=1&jobRecordsPerPage=10&sort=relevancy,,,,,,,,,,,,,,deloitte_(microsoft_practice)
+4,https://careers.cognizant.com/global-en/jobs/,.card-job-actions js-job,https://careers.cognizant.com/global-en/jobs/?keyword=%7Bq%7D&location=&radius=100&lat=&lng=&cname=&ccode=&pagesize=50,,,,,,,,,,,,,,cognizant_(microsoft_business_group)
+5,https://www.capgemini.com/careers/join-capgemini/job-search/,.table-tr filter-box tag-active joblink,https://www.capgemini.com/careers/join-capgemini/job-search/?keyword=%7Bq%7D&size=100,,,,,,,,,,,,,,capgemini
+6,https://digitalcareers.infosys.com/infosys/global-careers,.left-section,https://digitalcareers.infosys.com/infosys/global-careers?keyword=%7Bq%7D&per_page=100&page=%7Bp%7D,page,,,,,,,,,,,False,,infosys
+7,https://www.apexsystems.com/search-results-usa,.job-td-link,https://www.apexsystems.com/search-results-usa?catalogcode=USA&address=&radius=50&page=%7Bp%7D&rows=50&query=%7Bq%7D&remote=,page,,,,,,,,,,,False,,apex_systems
+8,https://www.randstadusa.com/jobs/q-power-platform/,.cards__title,https://www.randstadusa.com/jobs/q-{q}/,,,,,,,,,,,,,,randstad_technologies
+9,https://www.roberthalf.com/us/en/jobs/all/power-platform,.rhcl-job-card__inner-container,https://www.roberthalf.com/us/en/jobs/all/{q},,,,,,,,,,,,,,robert_half_technology
+10,https://www.akkodis.com/en-ca/careers/job-results,.JobSearchResults_filter-results-job-position__w2qDq,https://www.akkodis.com/en-ca/careers/job-results?q=%7Bq%7D,,,,,,,,,,,,,,akkodis_(modis)
+11,https://careers.smartrecruiters.com/HitachiSolutions/,.list--dotted title-list,https://careers.smartrecruiters.com/HitachiSolutions/?search=%7Bq%7D,,,,,,,,,,,,,,hitachi_solutions
+12,https://www.experis.com/en/search,.job-actionbar,https://www.experis.com/en/search?page=%7Bp%7D&searchKeyword=%7Bq%7D&sortOrder=Relevance&sf=sortOrder&ids=%7BsortOrder%3A%5Bd345ff2072b1444daf5d15d7a57ba3fe%5D%7D,page,,,,,,,,,,,False,,experis_(manpowergroup)
+13,https://careers.boozallen.com/jobs/search/power%20platform,.table--default,https://careers.boozallen.com/jobs/search/power%20platform?listFilterMode=1&jobRecordsPerPage=20,,,,,,,,,,,,,,booz_allen_hamilton
+14,https://www.kpmguscareers.com/job-search/,.list-view d-flex justify-content-between,https://www.kpmguscareers.com/job-search/?career-level=&career-level-parents=Experienced&practice-areas-parents=Innovation+%26+Technology%7C&practice-areas=&keyword=%7Bq%7D&location=&radius=50&spage=%7Bp%7D,spage,,,,,,,,,,,False,,kpmg_llp
+15,https://careers.dxc.com/global/en/search-results,.information,https://careers.dxc.com/global/en/search-results?keywords=%7Bq%7D,,,,,,,,,,,,,,dxc_technology
+16,https://nttdata.eightfold.ai/careers,data-test-#job-listing,https://nttdata.eightfold.ai/careers?query=%7Bq%7D&start=%7Bp%7D&pid=563327924072039&sort_by=solr,start,,,,,,,,,,,False,,ntt_data
+17,https://www.epam.com/careers/job-listings,.search-result__item-info-group,https://www.epam.com/careers/job-listings?recruitingUrl=%2Fcontent%2Fepam%2Fen%2Fcareers%2Fjob-listings%2Fjob&query=%7Bq%7D&country=all&sort=relevance&searchType=placeOfWorkFilter,,,,,,,,,,,,,,epam_systems
+18,https://rsm.wd1.myworkdayjobs.com/en-US/RSMCareers,.css-1q2dra3,https://rsm.wd1.myworkdayjobs.com/en-US/RSMCareers?q=%7Bq%7D,,,,,,,,,,,,,,rsm_us_llp
+19,https://www.hso.com/careers/vacancies/,.card card--text,https://www.hso.com/careers/vacancies/?searchTerm=%7Bq%7D,,,,,,,,,,,,,,hso
+20,https://fa-eyau-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs,.job-list-item__link,https://fa-eyau-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?keyword=%7Bq%7D&mode=location,,,,,,,,,,,,,,argano_(arbela)
+21,https://quisitive.com/careers/careers-north-america/,.job-posts,,,,,,,,,,,,,,,quisitive
+22,https://careers.crowe.com/search-results,.job-title,https://careers.crowe.com/search-results?keywords=%7Bq%7D,,,,,,,,,,,,,,crowe_llp
+23,https://fa-etqd-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs,.job-list-item__link,https://fa-etqd-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?keyword=%7Bq%7D&mode=location,,,,,,,,,,,,,,perficient
+24,https://careers.velosio.com/jobs,.description-container,https://careers.velosio.com/jobs?keywords=%7Bq%7D&sortBy=relevance&page=%7Bp%7D&limit=100,page,,,,,,,,,,,False,,velosio
+25,https://jobs.jobvite.com/sikichcareers/search,.jv-job-list-name,https://jobs.jobvite.com/sikichcareers/search?q=%7Bq%7D&l=&c=,,,,,,,,,,,,,,sikich_llp
+26,https://www.focuscloudgroup.org/job-search/,.results-header,https://www.focuscloudgroup.org/job-search/?keyword=%7Bq%7D,,,,,,,,,,,,,,focus_cloud_(cognitive_group)
+27,https://next-ventures.us/jobs/,.job_listings,https://next-ventures.us/jobs/?matador_s=%7Bq%7D,,,,,,,,,,,,,,next_ventures
+28,https://www.addisongroup.com/jobs/l/recruiting/jobsearchaction/19e62b1f-e3e6-11eb-be56-42010a8a0031/8b589444-39b4-11f0-8e87-0242683a33f9/false,.list-group-item,https://www.addisongroup.com/jobs/l/recruiting/jobsearchaction/19e62b1f-e3e6-11eb-be56-42010a8a0031/8b589444-39b4-11f0-8e87-0242683a33f9/false?locations=&term=%7Bq%7D&postalCode=,,,,,,,,,,,,,,addison_group_(tech)
+29,https://motionrecruitment.com/tech-jobs,.JobItem_module_jobItem,https://motionrecruitment.com/tech-jobs?keywords=%7Bq%7D,,,,,,,,,,,,,,motion_recruitment
+30,https://collabera.com/job-search/,.card-body,https://collabera.com/job-search/?sort_by=&industry=&keyword=%7Bq%7D&location=&Posteddays=0,,,,,,,,,,,,,,collabera
+31,https://www.computerfutures.com/en-gb/find-a-job/,.job-search,https://www.computerfutures.com/en-gb/find-a-job/?searchRadius=100mi&country=Austria%2CBelgium%2CGermany%2CJapan%2CNetherlands%2CUnited+Kingdom%2CUnited+States&keywords=%7Bq%7D,,,,,,,,,,,,,,computer_futures_(sthree)
+32,https://www.pearsoncarter.com/jobs/,.listing-title,https://www.pearsoncarter.com/jobs/?search_keywords=%7Bq%7D&search_location=&search_radius=&radius_type=miles&filter_job_type%5B%5D=&filter_job_type%5B%5D=&filter_job_type%5B%5D=&filter_job_type%5B%5D=&filter_job_type%5B%5D=&filter_job_type%5B%5D=&filter_job_type%5B%5D=&filter_job_type%5B%5D=,,,,,,,,,,,,,,pearson_carter
+33,https://www.prodapta.com/search-jobs/,.job-item,https://www.prodapta.com/search-jobs/?fwp_keyword=%7Bq%7D,,,,,,,,,,,,,,prodapta_(ellis_group)
+34,https://www.investigo.co.uk/jobs,.job-result-item,https://www.investigo.co.uk/jobs?sort_type=relevance&query=%7Bq%7D&selected_locations=&submit=Search&source=google.com,,,,,,,,,,,,,,investigo
+35,https://mondo.com/jobs/l/recruiting/jobsearchaction/c8336608-98ca-11ec-8029-42010a8a0008/d76c7451-39b8-11f0-8e87-0242683a33f9/false,.list-group-item,https://mondo.com/jobs/l/recruiting/jobsearchaction/c8336608-98ca-11ec-8029-42010a8a0008/d76c7451-39b8-11f0-8e87-0242683a33f9/false?term=%7Bq%7D&postalCode=,,,,,,,,,,,,,,mondo
+36,https://careers.columbusglobal.com/jobs,#jobs_list_container,https://careers.columbusglobal.com/jobs?split_view=true&query=%7Bq%7D,,,,,,,,,,,,,,columbus_global_(u.s.)
+37,https://jobs.lever.co/mcaconnect,.posting-categories,,,,,,,,,,,,,,,mca_connect
+38,https://careers.eidebailly.com/jobs,.mat-accordion cards,https://careers.eidebailly.com/jobs?_gl=1%2Akdg89h%2A_gcl_au%2ANDIxNzEyMzk3LjE3NDgyMjUxMTM.&keywords=%7Bq%7D&sortBy=relevance&page=%7Bp%7D,page,,,,,,,,,,,False,,eide_bailly_llp
+39,https://careers.wipfli.com/all-openings,.sui-results-container,https://careers.wipfli.com/all-openings?q=%7Bq%7D&size=n_20_n,,,,,,,,,,,,,,wipfli_(technology_consulting)
+40,https://careers.westerncomputer.com/jobs,#jobs_list_container,https://careers.westerncomputer.com/jobs?query=%7Bq%7D,,,,,,,,,,,,,,western_computer
+41,https://careers-randgroup.icims.com/jobs/search,.container-flu# iCIMS_JobsTable,https://careers-randgroup.icims.com/jobs/search?ss=1&searchKeyword=%7Bq%7D,,,,,,,,,,,,,,rand_group
+42,https://www.revolutiongroup.com/about-us/join-us/,#whr_embed_hook,,,,,,,,,,,,,,,revolution_group
+43,https://sa-global.breezy.hr/,.position transition,,,,,,,,,,,,,,,sa.global
+44,https://jobs.lever.co/ttecdigital,.posting,,,,,,,,,,,,,,,ttec_digital_(avtex)
+45,https://www.encorebusiness.com/company/careers/,.careers-no-bullets,,,,,,,,,,,,,,,encore
+46,https://ebqb.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs,.job-list-item__link,https://ebqb.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?keyword=%7Bq%7D&mode=location,,,,,,,,,,,,,,bdo
+47,https://usource.ripplehire.com/candidate/,.list-job-box,https://usource.ripplehire.com/candidate/?token=xHQWoFn4C242POo7xMpH&source=CAREERSITE#list%2Fsearch=%7Bq%7D,,,,,,,,,,,,,,ust
+48,https://digitall.com/careers/apply,rolelistitem,,,,,,,,,,,,,,,digitall_nature_bulgaria_eood
+49,https://creospark.com/careers/,.panel-heading,,,,,,,,,,,,,,,creospark
+50,https://jobs.hexaware.com/,.job-list-item__link,https://jobs.hexaware.com/#en%2Fsites%2FCX_1%2Fjobs%3Fkeyword=%7Bq%7D&mode=location&sortBy=POSTING_DATES_DESC,,,,,,,,,,,,,,hexaware
+51,https://careers.wipro.com/search,.data-row,https://careers.wipro.com/search?q=%7Bq%7D&q2=&alertId=&locationsearch=&title=power+platform&location=&date=,,,,,,,,,,,,,,wipro
+52,https://jobs.birlasoft.com/search/,#searchresults,https://jobs.birlasoft.com/search/?createNewAlert=false&q=%7Bq%7D&optionsFacetsDD_country=&optionsFacetsDD_department=,,,,,,,,,,,,,,birlasoft
+53,https://www.improving.com/careers/open-positions/,.MuiDataGr#-main css-opb0c2,https://www.improving.com/careers/open-positions/?search=%7Bq%7D,,,,,,,,,,,,,,improving
+54,https://www.twoday.com/careers/open-positions,.tw-w-full tw-relative,,,,,,,,,,,,,,,twoday
+55,https://careers.tietoevry.com/jobs,.attrax-list-w#get__lists,https://careers.tietoevry.com/jobs?q=%7Bq%7D&options=&page=%7Bp%7D,page,,,,,,,,,,,False,,tietoevry
+56,https://go-planet.com/,.et_pb_post,https://go-planet.com/?s=microsoft+dynamics,,,,,,,,,,,,,,planet_technologies
+57,https://careers.kainos.com/gb/en/search-results,rolelistitem,https://careers.kainos.com/gb/en/search-results?keywords=%7Bq%7D,,,,,,,,,,,,,,kainos
+58,https://jobs.slalom.com/,#result-count,https://jobs.slalom.com/#%2F%3Fkeywords=%7Bq%7D,,,,,,,,,,,,,,slalom_consulting
+59,https://jobs.us.pwc.com/search-jobs/power%20platform/932/1,ul,https://jobs.us.pwc.com/search-jobs/power%20platform/932/1?fl=6252001,,,,,,,,,,,,,,pwc
+60,https://fa-etvl-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs,div,https://fa-etvl-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?keyword=%7Bq%7D&mode=location&sortBy=POSTING_DATES_DESC,,,,,,,,,,,,,,zensar_technologies
+61,https://www.hays.com/job-search/power-platform-jobs-in-united-states-us,#detailsSection,https://www.hays.com/job-search/power-platform-jobs-in-united-states-us?q=%7Bq%7D&location=United+States%2C+US&specialismId=&subSpecialismId=&locationf=&industryf=&sortType=0&jobType=-1&flexiWorkType=-1&payTypefacet=-1&minPay=-1&maxPay=-1&jobSource=HaysGCJ&searchPageTitle=Power+Platform+Jobs+in+United+States%2C+US+%7C+Hays+Recruitment+US&searchPageDesc=Looking+for+a+new+Power+Platform+job+in+United+States%2C+US%3F+Browse+our+latest+Power+Platform+jobs+and+apply+with+Hays%21,,,,,,,,,,,,,,hays_technology
+62,https://conspicuous.com/jobs/,.job_listings,,,,,,,,,,,,,,,conspicuous
+63,https://www.nigelfrank.com/microsoft-jobs,,https://www.nigelfrank.com/microsoft-jobs?newJobs=true&keyword=%7Bq%7D&location=&jobType=both&page=%7Bp%7D&remote=&security=&salaryFrom=&salaryTo=&salaryCurrency=&segment=&product=,page,,,,,,,,,,,False,,
+64,https://k2partnering.com/talent/jobs/,.job_listings,https://k2partnering.com/talent/jobs/?search_keywords=%7Bq%7D&search_location=&filter_by_custom_job_location=&filter_job_type%5B%5D=&filter_job_type%5B%5D=&filter_job_type%5B%5D=,,,,,,,,,,,,,,k2_partnering
