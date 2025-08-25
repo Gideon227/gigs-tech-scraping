@@ -77,7 +77,7 @@ async def job_detail_extractor_from_url(url: str, provider: str, api_token: str 
         cache_mode=CacheMode.BYPASS,
         word_count_threshold=1,
         page_timeout=80000,
-        wait_for="css:h1, p, h5, span",
+        wait_for="p, h2, h5, span",
         extraction_strategy=LLMExtractionStrategy(
             llm_config=LLMConfig(provider=provider, api_token=api_token),
             schema=JobData.model_json_schema(),
