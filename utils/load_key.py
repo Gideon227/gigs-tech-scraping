@@ -42,5 +42,5 @@ def load_env_from_ssm(param_map: Dict[str, str], with_decryption: bool = True) -
                 val = found[ssm_name]
                 os.environ[env_var] = val
                 result[env_var] = val
-    print("keysss",result[0])
+    print("keysss",result)
     return result
