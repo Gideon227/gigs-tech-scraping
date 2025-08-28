@@ -117,7 +117,7 @@ async def job_detail_extractor_from_url(url: str, provider: str, api_token: str 
             - Use full names for location abbreviations (e.g., "US" → "United States", "NJ" → "New Jersey").
             Return clean, structured values:
             - location, country, state, city: must contain only names, no additional text.
-            - salary: If both annual and hourly rates are present, return the annual. If only hourly is provided, return it with its frequency (e.g., "60 - 85 USD per hour"). If no salary is found, return an empty string.
+            - salary: If both annual and hourly rates are present, use the annual rate (“per year”). If only hourly is provided, append “per hour.” If only annual or “per year” appears, append “per year.” If no salary is found, return an empty string. If frequency isn’t specified, treat values > 10000 as “per year,” otherwise “per hour.”
             - jobType: one of "fullTime", "partTime", "contractToHire", "tempContract", "gigWork".
             - experienceLevel: one of "beginner", "intermediate", "expert", or "experienced".
             - workSettings: one of "remote", "onSite", "hybrid".
@@ -129,7 +129,7 @@ async def job_detail_extractor_from_url(url: str, provider: str, api_token: str 
             extra_args=extra_args,
         ),
     )
-
+# If both annual and hourly rates are present, return the annual. If only hourly is provided, return it with its frequency (e.g., "60 - 85 USD per hour"). If no salary is found, return an empty string. If the salary is anunally or anything that state per year return per year and per year and for job without the frequency if it's above 10k return per year 
     async with AsyncWebCrawler(config=browser_config) as crawler:
         try:
             result = await crawler.arun(url=url, config=crawler_config)
@@ -179,7 +179,7 @@ async def _search_and_paginate_with_playwright(site: dict, keyword: str) -> list
     - Collect job HREFs (static) OR open each card, scrape modal to find the apply/detail URL
     Returns a list of lightweight job dicts: {title, applicationUrl, postedDate, companyName}
     """
-    
+    print("I am in dynamics part....💦")
     results = []
     max_pages = int(site.get("max_pages") or 10)  # guardrail only
     wait_for = site.get("wait_for") or "body"
@@ -206,7 +206,7 @@ async def _search_and_paginate_with_playwright(site: dict, keyword: str) -> list
     modal_close_selector = site.get("modal_close_selector")
 
     async with async_playwright() as pw:
-        browser = await pw.chromium.launch(headless=True)
+        browser = await pw.chromium.launch(headless=False)
         context = await browser.new_context()
         page = await context.new_page()
 
@@ -228,6 +228,7 @@ async def _search_and_paginate_with_playwright(site: dict, keyword: str) -> list
             # Otherwise use job cards (dynamic)
             if job_card_selector:
                 cards = await page.query_selector_all(job_card_selector)
+                print(f"Found this number of card{len(cards)}")
                 out = []
                 for card in cards:
                     try:

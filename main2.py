@@ -126,7 +126,7 @@ async def run():
                         "roleCategory":data.get("roleCategory"),
                         "qualifications":data.get("qualifications"),
                         "companyLogo":data.get("companyLogo"),
-                        "companyName":job.get("companyName", company_name),
+                        "companyName":company_name or job.get("companyName"),
                         "minSalary":data.get("minSalary"),
                         "maxSalary":data.get("maxSalary"),
                         "postedDate":site_postedDate or postedDate,
