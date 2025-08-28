@@ -615,7 +615,7 @@ if __name__ == "__main__":
     # load_json_to_db(json_file, db_params)
     # # load_json_to_db_pt(json_file)
     # delete_job_by_id("JOB-003", HOST, DATABASE, USER, PASSWORD)
-    # fetch_jobs_from_db(host=HOST, database=DATABASE, user=USER, password=PASSWORD)
+    fetch_jobs_from_db(host=HOST, database=DATABASE, user=USER, password=PASSWORD)
 
     # find_salary_rows()
     # find_special_salary_rows()

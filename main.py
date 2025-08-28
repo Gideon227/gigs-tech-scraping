@@ -10,7 +10,7 @@ from db.db_connector import load_json_to_db
 from utils.load_url import load_urls_from_csv
 from utils.logger import setup_scraping_logger
 from utils.email_sender import send_completion_email
-from utils.load_key import load_env_from_ssm
+# from utils.load_key import load_env_from_ssm
 from main2 import run as scraper
 
 # Optional: WhatsApp via Twilio
@@ -28,34 +28,34 @@ logger = setup_scraping_logger(name="Job scraping")
 
 
 # Load env from SSM once at startup
-load_env_from_ssm({
-    # OPENAI 
-    "PROVIDER": "/job-scraper/PROVIDER",
-    "OPENAI_API_KEY": "/job-scraper/OPENAI_API_KEY",
-    # DATABASE
-    "PG_HOST": "/job-scraper/PG_HOST",
-    "PG_PORT": "/job-scraper/PG_PORT",
-    "PG_USER": "/job-scraper/PG_USER",
-    "PG_PASSWORD": "/job-scraper/PG_PASSWORD",
-    "DB_NAME": "/job-scraper/DB_NAME",
-    # ALERT
-    "MAIL_USERNAME": "/job-scraper/MAIL_USERNAME",
-    "MAIL_PASSWORD": "/job-scraper/MAIL_PASSWORD",
-     "MAIL_FROM": "/job-scraper/MAIL_FROM",
-     "MAIL_FROM_NAME": "/job-scraper/MAIL_FROM_NAME",
-     "MAIL_PORT": "/job-scraper/MAIL_PORT",
-     "MAIL_SERVER": "/job-scraper/MAIL_SERVER",
-    "MAIL_TO": "/job-scraper/MAIL_TO",
-    # "SMTP_HOST": "/job-scraper/SMTP_HOST",
-    # "SMTP_USER": "/job-scraper/SMTP_USER",
-    # "SMTP_PASSWORD": "/job-scraper/SMTP_PASSWORD",
-    # "TWILIO_ACCOUNT_SID": "/job-scraper/TWILIO_ACCOUNT_SID",
-    # "TWILIO_AUTH_TOKEN": "/job-scraper/TWILIO_AUTH_TOKEN",
-    # "TWILIO_WHATSAPP_FROM": "/job-scraper/TWILIO_WHATSAPP_FROM",
-    # "TWILIO_WHATSAPP_TO": "/job-scraper/TWILIO_WHATSAPP_TO",
-    # "S3_BUCKET": "/job-scraper/S3_BUCKET",
-    # "S3_PREFIX": "/job-scraper/S3_PREFIX",  
-})
+# load_env_from_ssm({
+#     # OPENAI 
+#     "PROVIDER": "/job-scraper/PROVIDER",
+#     "OPENAI_API_KEY": "/job-scraper/OPENAI_API_KEY",
+#     # DATABASE
+#     "PG_HOST": "/job-scraper/PG_HOST",
+#     "PG_PORT": "/job-scraper/PG_PORT",
+#     "PG_USER": "/job-scraper/PG_USER",
+#     "PG_PASSWORD": "/job-scraper/PG_PASSWORD",
+#     "DB_NAME": "/job-scraper/DB_NAME",
+#     # ALERT
+#     "MAIL_USERNAME": "/job-scraper/MAIL_USERNAME",
+#     "MAIL_PASSWORD": "/job-scraper/MAIL_PASSWORD",
+#      "MAIL_FROM": "/job-scraper/MAIL_FROM",
+#      "MAIL_FROM_NAME": "/job-scraper/MAIL_FROM_NAME",
+#      "MAIL_PORT": "/job-scraper/MAIL_PORT",
+#      "MAIL_SERVER": "/job-scraper/MAIL_SERVER",
+#     "MAIL_TO": "/job-scraper/MAIL_TO",
+#     # "SMTP_HOST": "/job-scraper/SMTP_HOST",
+#     # "SMTP_USER": "/job-scraper/SMTP_USER",
+#     # "SMTP_PASSWORD": "/job-scraper/SMTP_PASSWORD",
+#     # "TWILIO_ACCOUNT_SID": "/job-scraper/TWILIO_ACCOUNT_SID",
+#     # "TWILIO_AUTH_TOKEN": "/job-scraper/TWILIO_AUTH_TOKEN",
+#     # "TWILIO_WHATSAPP_FROM": "/job-scraper/TWILIO_WHATSAPP_FROM",
+#     # "TWILIO_WHATSAPP_TO": "/job-scraper/TWILIO_WHATSAPP_TO",
+#     # "S3_BUCKET": "/job-scraper/S3_BUCKET",
+#     # "S3_PREFIX": "/job-scraper/S3_PREFIX",  
+# })
 
 
 # -------------------------------
@@ -164,6 +164,8 @@ async def run():
     print('url', urls)
     print('url len', len(urls))
     logger.info(f"Found {len(urls)} sites")
+    urls=urls[1:]
+    print(f"short url: {len(urls)}")
     keywords = _load_keywords()
     logger.info(f"Using keywords: {keywords}")
     
@@ -243,7 +245,7 @@ async def run():
                         "roleCategory": (data or {}).get("roleCategory"),
                         "qualifications": (data or {}).get("qualifications"),
                         "companyLogo": (data or {}).get("companyLogo"),
-                        "companyName": job.get("companyName", company_name),
+                        "companyName": company_name or job.get("companyName"),
                         "minSalary": (data or {}).get("minSalary"),
                         "maxSalary": (data or {}).get("maxSalary"),
                         "postedDate": site_postedDate or postedDate_now,
@@ -266,27 +268,30 @@ async def run():
     return grand_jobs_list
 
 
-async def main():
-    first_data = []
-    second_data= []
+# async def main():
+#     first_data = []
+#     second_data= []
     
-    try:
-        first_data = await run()  
-    except Exception as e:
-        print(f"First run failed: {e}")   
+#     try:
+#         first_data = await run()  
+#     except Exception as e:
+#         print(f"First run failed: {e}")   
         
-    try:  
-        second_data = await scraper()
-    except Exception as e:
-        print(f"Second run failed: {e}") 
-    print(f"Len of fisrt {len(first_data)}, second: {len(second_data)} ")         
-    return first_data, second_data
+#     try:  
+#         second_data = await scraper()
+#     except Exception as e:
+#         print(f"Second run failed: {e}") 
+#     print(f"Len of fisrt {len(first_data)}, second: {len(second_data)} ")         
+#     return first_data, second_data
 
 
 if __name__ == "__main__":
-    first_data, second_data = asyncio.run(main())
+    # first_data, second_data = asyncio.run(main())
     # merge both result
-    result = (first_data or []) + (second_data or [])
+    # result = (first_data or []) + (second_data or [])
+    
+    # test here
+    result = asyncio.run(run())
     print(f"merge len: {len(result)}")
     # second_run = asyncio.run(scraper())
     # scraper()
