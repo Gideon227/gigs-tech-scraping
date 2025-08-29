@@ -1,36 +1,49 @@
-name: Scrape Jobs
+name: Scrape Jobs Production
 
 on:
   schedule:
-    # - cron: '0 2 * * *'  # Runs every day at 2 AM UTC
-    - cron: '40 20 * * *'  # Runs every day at 8:40 PM UTC (9:40 PM WAT)
+    # - cron: '0 18 * * *'  # Runs every day at 6:00 PM UTC (7:00 PM WAT)
   workflow_dispatch:
 
 jobs:
   scrape:
+    # container:
+    #   image: mcr.microsoft.com/playwright:v1.40.0-jammy
     runs-on: ubuntu-latest
+    environment: Production
     steps:
       - uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          # python-version: '3.10'
           python-version: '3.12'
+          
+      - name: Install Python dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install playwright
 
+      - name: Install Playwright browsers
+        run: |
+          python -m playwright install chromium
+          python -m playwright install-deps
 
-      - name: Export environment variables
+      - name: Verify Playwright installation
+        run: |
+          python -m playwright --version
+          ls -la ~/.cache/ms-playwright/
+
+      - name: Run scraper
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           CAPTCHA_API_KEY: ${{ secrets.CAPTCHA_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PROVIDER: ${{ secrets.PROVIDER }}
-
           HOST: ${{ secrets.HOST }}
           DATABASE: ${{ secrets.DATABASE }}
           USER: ${{ secrets.USER }}
           PASSWORD: ${{ secrets.PASSWORD }}
-
           MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
           MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
           MAIL_FROM: ${{ secrets.MAIL_FROM }}
@@ -38,9 +51,6 @@ jobs:
           MAIL_PORT: ${{ secrets.MAIL_PORT }}
           MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
-        run: echo "Environment variables set"
-
-      - name: Install dependencies and run scraper
         run: |
-          pip install -r requirements.txt
+          python -c "import os; print('PROVIDER:', os.getenv('PROVIDER'))"
           python main.py
